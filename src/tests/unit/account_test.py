@@ -59,3 +59,31 @@ def test_accounte_creation_with_invalid_car_plate():
         assert False
     except ValueError:
         assert True
+
+
+def test_account_creation_with_valid_car_plate():
+    account = Account(
+        "John Doe",
+        f"{random()}@gmail.com",
+        "93306816035",
+        True,
+        True,
+        "ABC1234",
+    )
+    assert account.car_plate == "ABC1234"
+    assert True
+
+
+def test_account_creation_with_invalid_name():
+    try:
+        Account(
+            "John",
+            f"{random()}@gmail.com",
+            "93306816035",
+            True,
+            False,
+            "",
+        )
+        assert False
+    except ValueError:
+        assert True
