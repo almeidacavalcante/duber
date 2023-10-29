@@ -11,7 +11,7 @@ class RideRepositoryDatabase(RideRepository):
 
     def save(self, ride: Ride):
         ride_model = self.to_orm_model(ride)
-        self.session.add(ride_model)
+        self.session.merge(ride_model)
         self.session.commit()
 
     def get(self, ride_id: str) -> Ride:

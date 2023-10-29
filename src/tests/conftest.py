@@ -14,7 +14,7 @@ from src.infrastructure.repository.ride_repository_database import (
 )
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def session():
     session = SessionLocal()
     try:
@@ -27,25 +27,40 @@ def session():
         session.close()
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def account_repository(session):
     account_repository = AccountRepositoryDatabase(session)
     return account_repository
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def ride_repository(session):
     ride_repository = RideRepositoryDatabase(session)
     return ride_repository
 
 
-@pytest.fixture(scope="module")
-def account(session):
+@pytest.fixture(scope="function")
+def passenger_account(session):
     return AccountModel(
         account_id=str(uuid.uuid4()),
         is_driver=False,
+        is_passenger=True,
+        name="John Doe Passenger",
+        email=f"{uuid.uuid4()}@example.com",
+        cpf=GeradorCpf.gerar().rawValue,
+        is_verified=True,
+        verification_code=str(uuid.uuid4()),
+        car_plate=None,
+        date=datetime.utcnow(),
+    )
+
+@pytest.fixture(scope="function")
+def driver_account(session):
+    return AccountModel(
+        account_id=str(uuid.uuid4()),
+        is_driver=True,
         is_passenger=False,
-        name="John Doe",
+        name="Mark Driver",
         email=f"{uuid.uuid4()}@example.com",
         cpf=GeradorCpf.gerar().rawValue,
         is_verified=True,
@@ -55,35 +70,35 @@ def account(session):
     )
 
 
-@pytest.fixture(scope="module")
-def passenger(account_repository, session, account):
-    account.is_passenger = True
-    session.add(account)
+@pytest.fixture(scope="function")
+def passenger(account_repository, session, passenger_account):
+    passenger_account.is_passenger = True
+    session.add(passenger_account)
     session.commit()
-    yield account
+    yield passenger_account
     rides = (
         session.query(RideModel)
-        .filter(RideModel.passenger_id == account.account_id)
+        .filter(RideModel.passenger_id == passenger_account.account_id)
         .all()
     )
     for ride in rides:
         session.delete(ride)
-    session.delete(account)
+    session.delete(passenger_account)
     session.commit()
 
 
-@pytest.fixture(scope="module")
-def driver(account_repository, session, account):
-    account.is_driver = True
-    session.add(account)
+@pytest.fixture(scope="function")
+def driver(account_repository, session, driver_account):
+    driver_account.is_driver = True
+    session.add(driver_account)
     session.commit()
-    yield account
+    yield driver_account
     rides = (
         session.query(RideModel)
-        .filter(RideModel.passenger_id == account.account_id)
+        .filter(RideModel.driver_id == driver_account.account_id)
         .all()
     )
     for ride in rides:
         session.delete(ride)
-    session.delete(account)
+    session.delete(driver_account)
     session.commit()

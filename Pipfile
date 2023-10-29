@@ -10,6 +10,7 @@ pytest = "*"
 bradocs4py = "*"
 sqlalchemy = "*"
 uvicorn = "*"
+pytest-cov = "*"
 
 [dev-packages]
 alembic = "*"

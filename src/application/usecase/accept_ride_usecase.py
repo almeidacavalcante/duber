@@ -38,3 +38,4 @@ class AcceptRideUsecase:
         if len(active_rides) > 0:
             raise ApplicationException("Driver already has an active ride")
         self.ride_repository.save(ride)
+        return AcceptRideOutput(ride_id=ride.ride_id, driver_id=ride.driver_id)
