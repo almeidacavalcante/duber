@@ -8,8 +8,11 @@ fastapi = "*"
 psycopg2 = "*"
 pytest = "*"
 bradocs4py = "*"
+sqlalchemy = "*"
+uvicorn = "*"
 
 [dev-packages]
+alembic = "*"
 
 [requires]
 python_version = "3.10"

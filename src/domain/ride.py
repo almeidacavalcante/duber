@@ -6,7 +6,7 @@ from src.domain.exceptions.domain_exception import DomainException
 
 class Ride:
     _ride_id: str
-    _passanger_id: str
+    _passenger_id: str
     _driver_id: str
     _from_lat: float
     _from_long: float
@@ -16,7 +16,7 @@ class Ride:
 
     def __init__(
         self,
-        passanger_id: str,
+        passenger_id: str,
         from_lat: float,
         from_long: float,
         to_lat: float,
@@ -25,15 +25,38 @@ class Ride:
         self._ride_id = str(uuid.uuid4())
         self._status = "requested"
         self._date = datetime.utcnow()
-        self._passanger_id = passanger_id
+        self._passenger_id = passenger_id
+        self._driver_id = None
         self._from_lat = from_lat
         self._from_long = from_long
         self._to_lat = to_lat
         self._to_long = to_long
 
     @classmethod
-    def restore(cls, ride_id: str):
-        pass
+    def restore(
+        cls,
+        ride_id: str,
+        passenger_id: str,
+        driver_id: str,
+        from_lat: float,
+        from_long: float,
+        to_lat: float,
+        to_long: float,
+        status: str,
+        date: datetime,
+    ):
+        ride = cls(
+            passenger_id=passenger_id,
+            from_lat=from_lat,
+            from_long=from_long,
+            to_lat=to_lat,
+            to_long=to_long,
+        )
+        ride._ride_id = ride_id
+        ride._driver_id = driver_id
+        ride._status = status
+        ride._date = date
+        return ride
 
     def accept(self, driver_id: str):
         if self._status != "requested":
@@ -46,8 +69,12 @@ class Ride:
         return self._ride_id
 
     @property
-    def passanger_id(self):
-        return self._passanger_id
+    def passenger_id(self):
+        return self._passenger_id
+
+    @property
+    def driver_id(self):
+        return self._driver_id
 
     @property
     def to_lat(self):
@@ -72,11 +99,3 @@ class Ride:
     @property
     def from_long(self):
         return self._from_long
-
-    @property
-    def driver_id(self):
-        return self._driver_id
-
-
-
-
