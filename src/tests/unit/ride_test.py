@@ -25,3 +25,26 @@ def test_ride_acceptance_twice():
     except DomainException:
         assert True
 
+
+def test_cancel_ride():
+    ride = Ride("passanger_id", 1.0, 1.0, 1.0, 1.0)
+    ride.cancel()
+    assert ride.status == "cancelled"
+
+    ride = Ride("passanger_id", 1.0, 1.0, 1.0, 1.0)
+    ride.accept("driver_id")
+    ride.cancel()
+    assert ride.status == "cancelled"
+
+
+def test_cancel_a_cacelled_ride():
+    ride = Ride("passanger_id", 1.0, 1.0, 1.0, 1.0)
+    ride.cancel()
+    try:
+        ride.cancel()
+        assert False
+    except DomainException as e:
+        assert str(e) == "Ride is not active"
+        assert True
+
+

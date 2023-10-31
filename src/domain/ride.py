@@ -64,6 +64,11 @@ class Ride:
         self._status = "accepted"
         self._driver_id = driver_id
 
+    def cancel(self):
+        if self._status not in ["accepted", "requested"]:
+            raise DomainException("Ride is not active")
+        self._status = "cancelled"
+
     @property
     def ride_id(self):
         return self._ride_id
